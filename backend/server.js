@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const axios = require('axios');
 const { google } = require('googleapis');
 const oauth2 = google.auth.OAuth2;
 const app = express();
@@ -48,14 +49,27 @@ app.get('/oauth2callback', async (req, res) => {
   console.log('code_verifier:', code_verifier);
   console.log('redirect_uri:', process.env.REDIRECT_URI);
   try {
-    const { tokens } = await oauth2Client.getToken({
+    const params = new URLSearchParams({
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
       code,
-      code_verifier,
-      redirect_uri: process.env.REDIRECT_URI
+      redirect_uri: process.env.REDIRECT_URI,
+      grant_type: 'authorization_code',
+      code_verifier
+      // only include code_verifier if you're using PKCE
     });
-    oauth2Client.setCredentials(tokens);
+    const { data:tokens } = await axios.post('https://oauth2.googleapis.com/token', params);
+    console.log(tokens);
 
-    console.log('tokens: ');
+    oauth2Client.setCredentials(tokens);
+    // const { tokens } = await oauth2Client.getToken({
+    //   code,
+    //   code_verifier,
+    //   redirect_uri: process.env.REDIRECT_URI
+    // });
+    // oauth2Client.setCredentials(tokens);
+
+    // console.log('tokens: ');
 
     // TODO: Securely store tokens and link to state/user session
     console.log('Obtained tokens for state', state, tokens);
