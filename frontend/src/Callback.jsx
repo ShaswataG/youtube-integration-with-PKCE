@@ -18,7 +18,7 @@ export default function Callback() {
     console.log('test');
     const verifier = localStorage.getItem("pkce_verifier") || "";
 
-    fetch(`http://localhost:4000/oauth2callback?${new URLSearchParams({
+    fetch(`http://localhost:3000/api/youtube/callback?${new URLSearchParams({
       code,
       state,
       code_verifier: verifier
