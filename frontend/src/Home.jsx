@@ -31,7 +31,7 @@ export default function Home() {
     localStorage.setItem("pkce_state", state);
 
     const params = new URLSearchParams({ state, code_challenge: challenge });
-    window.location.assign(`http://localhost:3000/api/youtube/authUrl?${params}`);
+    window.location.assign(`http://localhost:3000/api/kick/authUrl?${params}`);
   };
 
   return (
