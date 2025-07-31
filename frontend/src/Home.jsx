@@ -30,8 +30,31 @@ export default function Home() {
     localStorage.setItem("pkce_verifier", verifier);
     localStorage.setItem("pkce_state", state);
 
-    const params = new URLSearchParams({ state, code_challenge: challenge });
-    window.location.assign(`http://localhost:3000/api/youtube/authUrl?${params}`);
+    const params = new URLSearchParams({ state, code_challenge: challenge, platform: 'youtube' });
+    
+    try {
+      const response = await fetch(`http://localhost:3000/api/platform/connect/auth-url?${params}`, {
+        headers: {
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTg2LCJ0eXBlIjoiSU5URVJOQUwiLCJlbWFpbCI6ImJhcnJ5YWxsZW4xMjE1MjEyNEBnbWFpbC5jb20iLCJpc192ZXJpZmllZCI6MSwiaWF0IjoxNzUzOTc4MDYwLCJleHAiOjE3NTQwNjQ0NjB9.hO1CF4bAUW8BOcIwBkrGL5r2rsuGyNbDMA458ZkLc9Y`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch auth URL");
+      }
+
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url; // redirect manually
+      } else {
+        throw new Error("No URL in response");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Something went wrong during login.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
