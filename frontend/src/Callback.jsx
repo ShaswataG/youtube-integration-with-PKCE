@@ -21,7 +21,7 @@ export default function Callback() {
     const params = new URLSearchParams({
       code,
       code_verifier: verifier,
-      platform: 'youtube'
+      platform: 'kick'
     })
 
     fetch(`http://localhost:3000/api/platform/connect/callback?${params}`, {

@@ -30,7 +30,7 @@ export default function Home() {
     localStorage.setItem("pkce_verifier", verifier);
     localStorage.setItem("pkce_state", state);
 
-    const params = new URLSearchParams({ state, code_challenge: challenge, platform: 'youtube' });
+    const params = new URLSearchParams({ state, code_challenge: challenge, platform: 'kick' });
     
     try {
       const response = await fetch(`http://localhost:3000/api/platform/connect/auth-url?${params}`, {
